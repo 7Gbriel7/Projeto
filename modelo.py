@@ -6,7 +6,7 @@ class AppBD():
     
     def abrirConexao(self):
         try:
-            self.connection = sqlite3.connect('cadastro.db') 
+            self.connection = sqlite3.connect('missao.db') 
         except sqlite3.Error as error:
             if(self.connection):
                 print("Falha ao se conectar ao Banco de Dados", error)
@@ -17,9 +17,14 @@ class AppBD():
         CREATE TABLE IF NOT EXISTS dados (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
-            nascimento DATE NOT NULL,
-            cpf INTEGER NOT NULL,
-            senha VARCHAR NOT NULL
+            data DATE NOT NULL,
+            destino TEXT NOT NULL,
+            estado TEXT NOT NULL,
+            tripulacao TEXT NOT NULL,
+            carga TEXT NOT NULL,
+            duracao DATETIME NOT NULL,
+            custo FLOAT NOT NULL,
+            status TEXT NOT NULL
         );
         """
         try:
@@ -33,16 +38,16 @@ class AppBD():
                 cursor.close()
                 self.connection.close()
                 print("A conexão com o sqlite foi fechada.")
-    def inserirDados(self, name, nascimento, cpf, senha):
+    def inserirDados(self, name, data, destino, estado, tripulacao, carga, duracao, custo, status):
         self.abrirConexao()
-        insert_query = "INSERT INTO dados (name, nascimento, cpf, senha) VALUES (?, ?, ?, ?)"
+        insert_query = "INSERT INTO dados (name, data, destino, estado, tripulacao, carga, duracao, custo, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
         try:
             cursor = self.connection.cursor()
-            cursor.execute(insert_query, (name, nascimento, cpf, senha))
+            cursor.execute(insert_query, (name, data, destino, estado, tripulacao, carga, duracao, custo, status))
             self.connection.commit()
-            print("Produto inserido com sucesso")
+            print("Informações inseridas com sucesso")
         except sqlite3.Error as error:
-            print("Falha ao inserir dados", error)
+            print("Falha ao inserir", error)
         finally:
             if self.connection:
                 cursor.close()
@@ -64,16 +69,16 @@ class AppBD():
                 self.connection.close()
                 print("A conexão com o sqlite foi fechada.")
         return dados
-    def update_dados(self, id, name, nascimento, cpf, senha):
+    def update_dados(self, id, name, data, destino, estado, tripulacao, carga, duracao, custo, status):
         self.abrirConexao()
-        update_query = "UPDATE dados SET name = ?, nascimento = ?, cpf = ?, senha = ? WHERE id = ?"
+        update_query = "UPDATE dados SET name = ?, data = ?, destino = ?, estado = ?, tripulacao = ?, carga = ?, duracao = ?, custo = ?, status = ? WHERE id = ?"
         try:
             cursor = self.connection.cursor()
-            cursor.execute(update_query, (name, nascimento, cpf, senha, id))
+            cursor.execute(update_query, (name, data, destino, estado, tripulacao, carga, duracao, custo, status, id))
             self.connection.commit()
-            print("Produto atualizado com sucesso")
+            print("Informações atualizadas com sucesso")
         except sqlite3.Error as error:
-            print("Falha ao atualizar o produto", error)
+            print("Falha ao atualizar", error)
         finally:
             if self.connection:
                 cursor.close()
@@ -86,9 +91,9 @@ class AppBD():
             cursor = self.connection.cursor()
             cursor.execute(delete_query, (id,)) 
             self.connection.commit()
-            print("Produto deletado com sucesso")
+            print("Informações deletadas com sucesso")
         except sqlite3.Error as error:
-            print("Falha ao deletar produto", error)
+            print("Falha ao deletar", error)
         finally:
             if self.connection:
                 cursor.close()
